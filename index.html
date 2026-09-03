@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Euro Calculator V2</title>
+<style>
+:root{font-family:Segoe UI,Arial,sans-serif;color:#192e40;background:#eef2f6;font-size:16px;font-synthesis:none}*{box-sizing:border-box}body{margin:0}header{background:#1746a2;color:white;padding:24px max(24px,calc((100vw - 1180px)/2));display:flex;align-items:center;gap:14px}header strong{font-size:22px;letter-spacing:.02em}main{max-width:1228px;margin:0 auto;padding:36px 24px}h1{font-size:30px;letter-spacing:-.025em;margin:0 0 8px}p{line-height:1.55}.intro{margin:0 0 28px;color:#516575}.layout{display:grid;grid-template-columns:minmax(0,1fr) 345px;gap:24px;align-items:start}.panel{background:#fff;border:1px solid #d8e1e9;border-radius:14px;padding:24px;margin-bottom:20px}h2{font-size:18px;margin:0 0 20px}.number{font-size:13px;border-radius:50%;background:#dbeafe;padding:5px 8px;margin-right:8px;color:#1d4ed8}label{font-size:14px;font-weight:600;display:block;margin-bottom:7px}input,select,button{font:inherit}input,select{background:#fff;border:1px solid #acbdca;border-radius:7px;padding:10px 11px;width:100%;min-height:44px;color:#192e40}input:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #2563eb;outline-offset:3px}.rate{max-width:270px;display:flex;align-items:center;gap:12px}.rate input{font-size:26px;font-weight:650}.hint{font-size:14px;color:#556a7a;margin:10px 0 0}.day{border-top:1px solid #e1e8ee;padding-top:20px;margin-top:20px}.day:first-child{border-top:0;padding-top:0;margin-top:0}.dayhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}.dayhead h3{font-size:16px;margin:0}.grid{display:grid;grid-template-columns:1.45fr 1fr 1fr;gap:12px}.endrow{margin-top:12px;max-width:260px}.checks{display:flex;gap:16px;flex-wrap:wrap;margin-top:15px}.checks label{font-weight:400;display:flex;align-items:center;gap:8px;margin:0}.checks input{width:18px;min-height:18px;height:18px;accent-color:#2563eb}.daytotal{font-size:14px;color:#476071;margin:14px 0 0}.remove{border:0;background:transparent;color:#9b3b37;padding:8px;cursor:pointer;font-size:14px}.add{background:#2563eb;color:#ffffff;border:1px solid #2563eb;border-radius:8px;padding:12px 18px;font-weight:600;cursor:pointer;margin-top:22px}.add:hover{background:#1d4ed8}.summary{position:sticky;top:20px;background:#1746a2;color:#fff;border:0}.summary h2{color:#dae5ed}.total{font-size:42px;font-weight:700;letter-spacing:-.04em;color:#ffffff;margin:10px 0}.summary .hint{color:#dbeafe}.divider{border-top:1px solid #547ac3;margin:22px 0}.line{display:flex;justify-content:space-between;gap:14px;margin:14px 0;font-size:14px}.line span:last-child{white-space:nowrap;font-variant-numeric:tabular-nums}.line small{display:block;color:#dbeafe;font-size:13px;margin-top:4px}.info{font-size:14px;color:#556a7a}.rules{border-top:1px solid #d8e1e9;margin-top:28px;padding-top:22px}summary{font-weight:600;cursor:pointer;padding:5px 0}ul{padding-left:22px;line-height:1.8}.error{color:#a43131;font-size:14px;margin-top:12px}.note{font-size:14px;color:#526877;margin-top:18px}.formula{font-size:14px;background:#e7eef3;border-radius:8px;padding:14px;line-height:1.6}footer{color:#5b6f7f;font-size:13px;margin:22px 0}button:disabled{opacity:.4;cursor:default}@media(max-width:850px){.layout{grid-template-columns:1fr}.summary{position:static}.total{font-size:38px}}@media(max-width:540px){main{padding:24px 16px}header{padding:18px 16px}.panel{padding:18px}.grid{grid-template-columns:1fr 1fr}.datefield{grid-column:1/-1}h1{font-size:26px}.checks{flex-direction:column}.total{font-size:36px}}
+
+/* Direction sportive : bleu électrique, contrastes francs, lignes tendues. */
+:root{--primary:#003dff;--navy:#080d36;--ink:#101638;background:#f1f3f8;color:var(--ink)}
+header{position:relative;background:var(--navy);min-height:96px;border-bottom:5px solid var(--primary);overflow:hidden}
+header::after{content:"";position:absolute;right:8%;top:0;width:100px;height:100%;background:var(--primary);transform:skewX(-24deg);opacity:.75;pointer-events:none}
+header strong{font-family:'Arial Narrow','Segoe UI',Arial,sans-serif;font-size:clamp(1.35rem,3.5vw,1.9rem);font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.04em;position:relative;z-index:1}
+main{padding-top:38px;padding-bottom:48px}
+h1{font-family:'Arial Narrow','Segoe UI',Arial,sans-serif;font-weight:900;font-size:clamp(1.9rem,4vw,2.65rem);text-transform:uppercase;font-style:italic;letter-spacing:-.045em;line-height:1.1;margin-bottom:18px}
+.intro{max-width:840px;font-size:.95rem;line-height:1.65;color:#555e76;margin-bottom:30px;border-left:3px solid var(--primary);padding-left:16px}
+.layout{gap:28px;grid-template-columns:minmax(0,1fr) 370px}
+.panel{border:1px solid #dde2ed;border-radius:3px;box-shadow:0 6px 24px #10163806;padding:26px}
+h2{font-size:1.05rem;font-weight:800;letter-spacing:.035em;text-transform:uppercase;display:flex;align-items:center;gap:12px}
+.number{border-radius:0;display:inline-flex;align-items:center;justify-content:center;background:var(--primary);color:#fff;font-size:.8rem;font-weight:800;padding:7px 9px;margin:0;transform:skewX(-9deg)}
+label{color:#424b66;font-weight:650}
+input,select{border-radius:2px;border:1px solid #c9d1e1;background:#f8f9fc;min-height:48px;transition:border-color .15s,background .15s}
+input:hover{border-color:#7e92bb}input:focus{background:white;border-color:var(--primary)}
+input:focus-visible,button:focus-visible,summary:focus-visible{outline-color:var(--primary)}
+.rate{max-width:240px}.rate input{font-size:1.6rem;min-height:44px;padding:8px 11px;font-weight:800;letter-spacing:-.04em;color:var(--navy);border-bottom:3px solid var(--primary)}
+.rate>span{font-size:1.25rem;font-weight:700;color:var(--primary)}
+.day{margin-top:24px;padding-top:24px}.dayhead h3{font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:.9rem}
+.remove{border-radius:2px}.remove:hover:not(:disabled){background:#fff0ef}
+.daytotal{padding:10px 12px;background:#edf2ff;border-left:3px solid var(--primary);color:#213c84;font-weight:600}
+.overnight-hint:empty{display:none}.overnight-hint{color:#1847b8;font-weight:600}
+.add{border-radius:2px;background:var(--primary);border-color:var(--primary);text-transform:uppercase;font-size:.875rem;font-weight:800;letter-spacing:.035em;min-height:48px;padding:14px 20px;transition:background .15s,transform .15s}
+.add:hover{background:#002cc2;transform:translateY(-1px)}
+.summary{background:var(--navy);border:0;border-top:5px solid var(--primary);box-shadow:0 14px 30px #080d361a;border-radius:0;padding:28px 26px}
+.summary h2{font-size:.9rem;letter-spacing:.11em;color:#b6c7ff;margin-bottom:18px}
+.total{font-family:'Arial Narrow','Segoe UI',Arial,sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;font-style:italic;letter-spacing:-.04em;line-height:1.15;padding-bottom:8px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.summary .hint{color:#bbc6e3}.divider{border-color:#2c335b;margin:22px 0}.line{margin:17px 0;line-height:1.4}.line span:last-child{font-weight:700}.line small{color:#a8b8df}.line:first-child{padding-bottom:16px;border-bottom:1px solid #2c335b}
+.rules{background:white;border:1px solid #dde2ed;border-left:3px solid var(--primary);padding:18px 22px;margin-top:24px}
+summary{font-size:.9rem;font-weight:800;text-transform:uppercase;letter-spacing:.03em}.formula{background:#edf2ff;border-radius:0;color:#213c84}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.summary{position:static}.total{font-size:2.8rem}}
+@media(max-width:540px){header{min-height:80px}header::after{right:-40px;opacity:.45}main{padding-top:28px}.panel{padding:20px}.intro{font-size:.9rem}.summary{padding:24px 20px}.add{width:100%}h2{font-size:.95rem}.rules{padding:16px}.total{font-size:2.5rem}}
+@media(prefers-reduced-motion:reduce){input,select,.add{transition:none}.add:hover{transform:none}}
+
+header{background-image:linear-gradient(90deg,#080d36 0%,rgba(8,13,54,.96) 30%,rgba(8,13,54,.48) 65%,rgba(8,13,54,.58) 100%),url('sports-banner.png');background-size:cover, min(65vw,950px) auto;background-position:center,right 47%;background-repeat:no-repeat}
+header::after{opacity:.2;width:35px}
+@media(max-width:540px){header{background-size:cover,100% auto;background-image:linear-gradient(90deg,rgba(8,13,54,.95),rgba(8,13,54,.65)),url('sports-banner.png')}}
+header{min-height:280px;padding:64px 24px;justify-content:center;text-align:center;background-image:linear-gradient(rgba(8,13,54,.35),rgba(8,13,54,.6)),url('sports-banner.png');background-size:cover;background-position:center,center 48%}
+header strong{font-size:clamp(1.8rem,5vw,3.6rem);text-shadow:0 3px 18px #080d36;line-height:1.15}
+header::after{display:none}
+@media(max-width:540px){header{min-height:220px;padding:48px 20px;background-size:cover;background-image:linear-gradient(rgba(8,13,54,.45),rgba(8,13,54,.65)),url('sports-banner.png')}}
+.site-footer{margin:0;padding:22px 24px;border-top:1px solid #dde2ed;background:#080d36;color:#bbc6e3;text-align:center;font-size:.875rem;letter-spacing:.025em}.site-footer .copyright{color:#fff;margin-right:8px;font-size:1rem}.site-footer strong{color:#fff;font-weight:600}
+#base{appearance:textfield;-moz-appearance:textfield}
+#base::-webkit-inner-spin-button,#base::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.base-toggle{display:flex;align-items:center;gap:10px;position:relative;min-height:44px;margin-bottom:12px;cursor:pointer;width:max-content}.base-toggle input{position:absolute;opacity:0;width:44px;height:24px;min-height:0;padding:0;margin:0}.toggle-track{width:44px;height:24px;border-radius:20px;background:#8390a8;position:relative}.toggle-track::after{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:white;border-radius:50%}.base-toggle input:checked+.toggle-track{background:var(--primary)}.base-toggle input:checked+.toggle-track::after{left:23px}.base-toggle input:focus-visible+.toggle-track{outline:3px solid var(--primary);outline-offset:3px}
+.base-toggle{width:max-content;max-width:100%;gap:14px;padding:8px 12px;margin-bottom:18px;border:1px solid #d9e2f6;border-radius:7px;background:#f0f4ff;box-shadow:0 2px 7px #080d3605}
+.base-toggle>span:not(.toggle-track){font-size:.875rem;font-weight:700;color:#69748e;transition:color .18s}
+.base-toggle>span:first-child{color:#173e9c}
+.base-toggle:has(input:checked)>span:first-child{color:#69748e}
+.base-toggle:has(input:checked)>span:last-child{color:#003dff}
+.base-toggle input{left:50%;transform:translateX(-50%)}
+.base-toggle .toggle-track{flex-shrink:0;width:48px;height:28px;background:#1e438f;box-shadow:inset 0 1px 3px #080d3626;transition:background .18s}
+.base-toggle .toggle-track::after{width:22px;height:22px;top:3px;left:3px;box-shadow:0 2px 5px #080d3633;transition:transform .18s}
+.base-toggle input:checked+.toggle-track::after{left:3px;transform:translateX(20px)}
+@media(prefers-reduced-motion:reduce){.base-toggle>span,.base-toggle .toggle-track,.base-toggle .toggle-track::after{transition:none}}
+.base-toggle>span:not(.toggle-track){text-transform:uppercase;letter-spacing:.04em}
+.base-selector{display:inline-flex;padding:4px;gap:4px;margin-bottom:18px;background:#edf2ff;border:1px solid #d9e2f6;border-radius:9px;max-width:100%}
+.base-selector label{position:relative;display:block;margin:0;cursor:pointer}
+.base-selector input{position:absolute;opacity:0;width:100%;height:100%;inset:0;margin:0;min-height:0;cursor:pointer}
+.base-selector span{display:block;padding:13px 19px;border-radius:5px;font-size:.875rem;letter-spacing:.04em;font-weight:800;color:#52617e;transition:background .18s,color .18s,box-shadow .18s;pointer-events:none}
+.base-selector input:checked+span{background:var(--primary);color:white;box-shadow:0 3px 8px #003dff26}
+.base-selector label:hover span{background:#dce6ff}.base-selector label:has(input:checked):hover span{background:#0033d6}
+.base-selector input:focus-visible+span{outline:3px solid #080d36;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.base-selector span{transition:none}}
+</style>
+</head>
+<body>
+<header><strong>Euro Calculator V2</strong></header>
+<main>
+<h1>Calculez votre salaire brut</h1>
+<p class="intro">Effectuez un calcul par contrat : renseignez votre salaire de base et toutes les journées travaillées pour ce contrat. Ne regroupez pas plusieurs contrats dans un même calcul. Les majorations s’ajoutent automatiquement.</p>
+<div class="layout"><div>
+<section class="panel"><h2><span class="number">01</span> Votre base</h2>
+<div class="base-selector" role="radiogroup" aria-label="Base journalière"><label><input id="base-eight" type="radio" name="base-hours" value="8" checked><span>BASE 8 H</span></label><label><input id="base-ten" type="radio" name="base-hours" value="10"><span>BASE 10 H</span></label></div><label for="base" id="base-label">Salaire brut pour 8 heures</label><div class="rate"><input id="base" type="number" min="0" step="0.01" value="229" inputmode="decimal"><span>€</span></div>
+<p class="hint" id="hourly"></p>
+</section>
+<section class="panel"><h2><span class="number">02</span> Vos journées de travail</h2>
+<div id="days"></div><button class="add" id="add" type="button">+ Ajouter une journée</button>
+
+</section>
+<details class="rules"><summary>Règles utilisées pour le calcul</summary>
+<ul class="info"><li>Taux horaire = base pour <span class="base-hours">8</span> heures ÷ <span class="base-hours">8</span>.</li><li>De 22 h à minuit : +20 % et +10 %, soit <strong>+30 %</strong>.</li><li>De minuit à 6 h : +20 % et +30 %, soit <strong>+50 %</strong>.</li><li>Dimanche : <strong>+40 %</strong>. Jour férié : <strong>+100 %</strong>. Si les deux coïncident, seule la majoration fériée de +100 % s’applique.</li><li>Les heures au-delà de <span class="base-hours">8</span> h par journée sont cumulées sur la semaine : les 2 premières à <strong>+25 %</strong>, toutes les suivantes à <strong>+50 %</strong>. Les heures manquantes des journées plus courtes réduisent ce cumul hebdomadaire, sans le rendre négatif ni diminuer le salaire de base. Les 2 premières heures restantes sont majorées à 25 %, puis les suivantes à 50 %. Le compteur repart à zéro chaque lundi. Une prestation qui traverse minuit reste rattachée à sa date de début pour ce cumul.</li><li>Toutes les majorations s’additionnent sur le taux horaire de base.</li><li>Dimanche et jour férié suivent la date de chaque heure. Le compteur des heures supplémentaires continue après minuit pour la même prestation.</li><li>Les 11 jours fériés nationaux français sont détectés automatiquement selon l’année.</li><li>Chaque journée compte une base fixe de <span class="base-hours">8</span> h, quelle que soit la durée travaillée. Les heures supplémentaires ajoutent uniquement leur majoration à cette base.</li><li>Calcul à la minute, en heures d’horloge saisies, sans correction de changement d’heure. Arrondi au centime sur le total.</li></ul>
+<p class="formula">Brut = nombre de journées × base journalière + majorations de nuit + majorations dimanche/férié + majorations d’heures supplémentaires.</p>
+</details>
+</div><aside><section class="panel summary" aria-live="polite" aria-atomic="true"><h2>Votre brut total</h2><div id="total" class="total"></div><p id="duration" class="hint"></p><div class="divider"></div><div id="breakdown"></div></section><p class="info">Vos saisies restent dans cette page. Elles ne sont pas enregistrées et sont effacées à sa fermeture.</p></aside></div>
+
+</main>
+<footer class="site-footer"><span class="copyright" aria-label="Copyright">©</span>Créé par <strong>Nicolas Stevens</strong></footer>
+<script>
+'use strict';
+const money = n => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n);
+const hours = n => {const m=Math.round(n*60);return Math.floor(m/60)+' h'+(m%60?' '+String(m%60).padStart(2,'0'):'');};
+const iso = d => d.toISOString().slice(0,10);
+const dateUTC = s => {if(!/^\d{4}-\d{2}-\d{2}$/.test(s))return NaN;const d=Date.parse(s+'T00:00:00Z');return Number.isFinite(d)&&iso(new Date(d))===s?d:NaN;};
+const minute = s => /^([01]\d|2[0-3]):[0-5]\d$/.test(s)?Number(s.slice(0,2))*60+Number(s.slice(3)):NaN;
+let nextId=1;
+const now=new Date();
+const today=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');
+let days=[];
+function holidayName(date){
+ const timestamp=dateUTC(date);if(!Number.isFinite(timestamp))return '';
+ const y=new Date(timestamp).getUTCFullYear();
+ const fixed={'01-01':'Jour de l’an','05-01':'Fête du Travail','05-08':'Victoire de 1945','07-14':'Fête nationale','08-15':'Assomption','11-01':'Toussaint','11-11':'Armistice','12-25':'Noël'};
+ if(fixed[date.slice(5)])return fixed[date.slice(5)];
+ const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),n=h+l-7*m+114;
+ const easter=Date.UTC(y,Math.floor(n/31)-1,n%31+1);
+ return ({1:'Lundi de Pâques',39:'Ascension',50:'Lundi de Pentecôte'})[(timestamp-easter)/86400000]||'';
+}
+function holidayDate(d,next=false){const date=dateUTC(d.date);return Number.isFinite(date)?iso(new Date(date+(next?86400000:0))):'';}
+function isHoliday(d,next=false){return (next?d.holidayNext:d.holiday)??Boolean(holidayName(holidayDate(d,next)));}
+function isOvernight(d){return minute(d.end)<minute(d.start);}
+function calculateDay(d,rate,previousOvertime=0,baseHours=8){
+ const date=dateUTC(d.date),start=minute(d.start),end=minute(d.end)+1440*Number(isOvernight(d)),length=end-start;
+ if(!Number.isFinite(date)||!Number.isFinite(start)||!Number.isFinite(end))return {error:'Renseignez une date et des horaires valides.'};
+ if(length<=0||length>1440)return {error:'Les heures de début et de fin sont identiques : impossible de distinguer 0 h de 24 h. Saisissez des horaires différents.'};
+ const result={minutes:length,base:baseHours*rate,night30:0,night50:0,sunday:0,holiday:0,ot25:0,ot50:0,start:date+start*60000,end:date+end*60000};
+ for(let i=0;i<length;i++){
+  const clock=start+i,local=clock%1440,offset=Math.floor(clock/1440);
+  const sunday=new Date(date+offset*86400000).getUTCDay()===0;
+  if(local>=1320)result.night30++;
+  if(local<360)result.night50++;
+  if(isHoliday(d,offset!==0))result.holiday++;
+  else if(sunday)result.sunday++;
+  if(i>=baseHours*60){
+   if(previousOvertime+i-baseHours*60<120)result.ot25++;
+   else result.ot50++;
+  }
+ }
+ result.total=result.base+rate/60*(result.night30*.3+result.night50*.5+result.sunday*.4+result.holiday+result.ot25*.25+result.ot50*.5);
+ return result;
+}
+function calculateDays(entries,rate,baseHours=8){
+ const results=new Array(entries.length),weeks=new Map();
+ entries.map((d,index)=>({d,index})).sort((a,b)=>(dateUTC(a.d.date)-dateUTC(b.d.date))||(minute(a.d.start)-minute(b.d.start))).forEach(({d,index})=>{
+  const date=dateUTC(d.date),weekday=new Date(date).getUTCDay();
+  const week=date-((weekday+6)%7)*86400000;
+  const result=calculateDay(d,rate,0,baseHours);
+  results[index]=result;
+  if(!result.error){if(!weeks.has(week))weeks.set(week,[]);weeks.get(week).push(result);}
+ });
+ for(const group of weeks.values()){
+  let remaining=Math.max(0,group.reduce((sum,r)=>sum+r.minutes-baseHours*60,0)),allocated=0;
+  for(const r of group){
+   const eligible=Math.min(Math.max(0,r.minutes-baseHours*60),remaining);
+   r.ot25=Math.min(eligible,Math.max(0,120-allocated));
+   r.ot50=eligible-r.ot25;
+   allocated+=eligible;remaining-=eligible;
+   r.total=r.base+rate/60*(r.night30*.3+r.night50*.5+r.sunday*.4+r.holiday+r.ot25*.25+r.ot50*.5);
+  }
+ }
+ return results;
+}
+function renderDays(){
+ document.getElementById('days').innerHTML=days.map((d,index)=>`<article class="day" data-id="${d.id}"><div class="dayhead"><h3>Journée ${String(index+1).padStart(2,'0')}</h3><button class="remove" type="button" data-remove="${d.id}" aria-label="Supprimer la journée ${index+1}" >Supprimer</button></div><div class="grid"><div class="datefield"><label for="date-${d.id}">Date de début</label><input id="date-${d.id}" type="date" data-field="date" value="${d.date}"></div><div><label for="start-${d.id}">Début</label><input id="start-${d.id}" type="time" data-field="start" value="${d.start}"></div><div><label for="end-${d.id}">Fin</label><input id="end-${d.id}" type="time" data-field="end" value="${d.end}"></div></div><p class="hint overnight-hint">${isOvernight(d)?'Fin le lendemain':''}</p><p class="daytotal" id="day-result-${d.id}"></p></article>`).join('');
+
+ update();
+}
+function update(){
+ const baseHours=document.getElementById('base-ten').checked?10:8;
+
+ document.getElementById('base-label').textContent='Salaire brut pour '+baseHours+' heures';
+ document.querySelectorAll('.base-hours').forEach(el=>el.textContent=baseHours);
+
+ const raw=document.getElementById('base').value,base=Number(raw),valid=raw!==''&&Number.isFinite(base)&&base>=0&&base<=10000000,rate=base/baseHours;
+ document.getElementById('hourly').textContent=valid?money(rate)+' brut / heure':'Saisissez une base comprise entre 0 et 10 000 000 €.';
+ const totals={minutes:0,base:0,night30:0,night50:0,sunday:0,holiday:0,ot25:0,ot50:0,total:0};
+ const results=calculateDays(days,rate,baseHours);
+ const errors=results.map(r=>r.error||'');
+ for(let i=0;i<results.length;i++)for(let j=i+1;j<results.length;j++){
+  const a=results[i],b=results[j];
+  if(a.error||b.error)continue;
+  if(Math.max(a.start,b.start)<Math.min(a.end,b.end))errors[i]=errors[j]='Ces horaires chevauchent une autre journée.';
+  else if(days[i].date===days[j].date)errors[i]=errors[j]='Regroupez le travail de cette date en une seule journée pour calculer les heures supplémentaires.';
+ }
+ let invalid=!valid;
+ days.forEach((d,i)=>{const r=results[i],el=document.getElementById('day-result-'+d.id);if(errors[i]){invalid=true;el.className='error';el.textContent=errors[i];}else if(!valid){el.className='daytotal';el.textContent='En attente d’un salaire de base valide.';}else{el.className='daytotal';el.textContent=hours(r.minutes/60)+' travaillées · '+money(r.total)+' brut';Object.keys(totals).forEach(k=>totals[k]+=r[k]);}});
+ document.getElementById('total').textContent=invalid?'—':money(totals.total);
+ document.getElementById('duration').textContent=invalid?'Corrigez les champs pour afficher le total.':hours(totals.minutes/60)+' travaillées · '+days.length+' journée'+(days.length>1?'s':'');
+ const lines=[['Salaire de base',totals.minutes,totals.base,''],['Nuit · 22 h – 0 h',totals.night30,totals.night30/60*rate*.3,'+30 %'],['Nuit · 0 h – 6 h',totals.night50,totals.night50/60*rate*.5,'+50 %'],['Dimanche',totals.sunday,totals.sunday/60*rate*.4,'+40 %'],['Jour férié',totals.holiday,totals.holiday/60*rate,'+100 %'],['Heures supplémentaires',totals.ot25,totals.ot25/60*rate*.25,'+25 %'],['Heures supplémentaires',totals.ot50,totals.ot50/60*rate*.5,'+50 %']];
+ document.getElementById('breakdown').innerHTML=invalid?'':lines.map(([label,min,amount,percent])=>`<div class="line"><span>${label}<small>${label==='Salaire de base'?days.length+' × '+money(base):hours(min/60)} ${percent?'à '+percent:''}</small></span><span>${money(amount)}</span></div>`).join('');
+}
+document.getElementById('base').addEventListener('input',update);
+document.getElementById('base-ten').addEventListener('change',update);
+ document.getElementById('base-eight').addEventListener('change',update);
+document.getElementById('days').addEventListener('input',event=>{
+ const field=event.target.dataset.field;if(!field)return;
+ const d=days.find(d=>d.id===Number(event.target.closest('.day').dataset.id));
+ d[field]=event.target.type==='checkbox'?event.target.checked:event.target.value;
+ if(field==='date'){d.holiday=null;d.holidayNext=null;}
+ const overnight=isOvernight(d),article=event.target.closest('.day');
+
+ article.querySelector('.overnight-hint').textContent=overnight?'Fin le lendemain':'';
+ update();
+});
+document.getElementById('days').addEventListener('click',event=>{const button=event.target.closest('[data-remove]');if(button){days=days.filter(d=>d.id!==Number(button.dataset.remove));renderDays();}});
+document.getElementById('add').addEventListener('click',()=>{const last=days[days.length-1];const dt=last?dateUTC(last.date):NaN;days.push({id:nextId++,date:Number.isFinite(dt)?iso(new Date(dt+86400000)):today,start:'09:00',end:'17:00',holiday:null,holidayNext:null});renderDays();document.getElementById('date-'+days[days.length-1].id).focus();});
+renderDays();
+</script>
+</body>
+</html>
