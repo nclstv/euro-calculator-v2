@@ -87,7 +87,7 @@ header::after{display:none}
 
 </section>
 <details class="rules"><summary>Règles utilisées pour le calcul</summary>
-<ul class="info"><li>Taux horaire = base pour <span class="base-hours">8</span> heures ÷ <span class="base-hours">8</span>.</li><li>De 22 h à minuit : +20 % et +10 %, soit <strong>+30 %</strong>.</li><li>De minuit à 6 h : +20 % et +30 %, soit <strong>+50 %</strong>.</li><li>Dimanche : <strong>+40 %</strong>. Jour férié : <strong>+100 %</strong>. Si les deux coïncident, seule la majoration fériée de +100 % s’applique.</li><li>Les heures au-delà de <span class="base-hours">8</span> h par journée sont cumulées sur la semaine : les 2 premières à <strong>+25 %</strong>, toutes les suivantes à <strong>+50 %</strong>. Les heures manquantes des journées plus courtes réduisent ce cumul hebdomadaire, sans le rendre négatif ni diminuer le salaire de base. Les 2 premières heures restantes sont majorées à 25 %, puis les suivantes à 50 %. Le compteur repart à zéro chaque lundi. Une prestation qui traverse minuit reste rattachée à sa date de début pour ce cumul.</li><li>Toutes les majorations s’additionnent sur le taux horaire de base.</li><li>Dimanche et jour férié suivent la date de chaque heure. Le compteur des heures supplémentaires continue après minuit pour la même prestation.</li><li>Les 11 jours fériés nationaux français sont détectés automatiquement selon l’année.</li><li>Chaque journée compte une base fixe de <span class="base-hours">8</span> h, quelle que soit la durée travaillée. Les heures supplémentaires ajoutent uniquement leur majoration à cette base.</li><li>Calcul à la minute, en heures d’horloge saisies, sans correction de changement d’heure. Arrondi au centime sur le total.</li></ul>
+<ul class="info"><li>Taux horaire = base pour <span class="base-hours">8</span> heures ÷ <span class="base-hours">8</span>.</li><li>De 22 h à minuit : +20 % et +10 %, soit <strong>+30 %</strong>.</li><li>De minuit à 6 h : +20 % et +30 %, soit <strong>+50 %</strong>.</li><li>Dimanche : <strong>+40 %</strong>. Jour férié : <strong>+100 %</strong>. Si les deux coïncident, seule la majoration fériée de +100 % s’applique.</li><li>Les heures au-delà de <span class="base-hours">8</span> h par journée sont cumulées sur la semaine : les 2 premières à <strong>+25 %</strong>, toutes les suivantes à <strong>+50 %</strong>. Les heures manquantes des journées plus courtes réduisent ce cumul hebdomadaire, sans le rendre négatif ni diminuer le salaire de base. Les 2 premières heures restantes sont payées à 125 % du taux horaire, puis les suivantes à 150 %. Le compteur repart à zéro chaque lundi. Une prestation qui traverse minuit reste rattachée à sa date de début pour ce cumul.</li><li>Toutes les majorations s’additionnent sur le taux horaire de base.</li><li>Dimanche et jour férié suivent la date de chaque heure. Le compteur des heures supplémentaires continue après minuit pour la même prestation.</li><li>Les 11 jours fériés nationaux français sont détectés automatiquement selon l’année.</li><li>Chaque journée compte une base fixe de <span class="base-hours">8</span> h, quelle que soit la durée travaillée. Les heures supplémentaires restantes sont ajoutées à cette base à 125 % ou 150 % du taux horaire (heure complète et majoration).</li><li>Calcul à la minute, en heures d’horloge saisies, sans correction de changement d’heure. Arrondi au centime sur le total.</li></ul>
 <p class="formula">Brut = nombre de journées × base journalière + majorations de nuit + majorations dimanche/férié + majorations d’heures supplémentaires.</p>
 </details>
 </div><aside><section class="panel summary" aria-live="polite" aria-atomic="true"><h2>Votre brut total</h2><div id="total" class="total"></div><p id="duration" class="hint"></p><div class="divider"></div><div id="breakdown"></div></section><p class="info">Vos saisies restent dans cette page. Elles ne sont pas enregistrées et sont effacées à sa fermeture.</p></aside></div>
@@ -134,7 +134,7 @@ function calculateDay(d,rate,previousOvertime=0,baseHours=8){
    else result.ot50++;
   }
  }
- result.total=result.base+rate/60*(result.night30*.3+result.night50*.5+result.sunday*.4+result.holiday+result.ot25*.25+result.ot50*.5);
+ result.total=result.base+rate/60*(result.night30*.3+result.night50*.5+result.sunday*.4+result.holiday+result.ot25*1.25+result.ot50*1.5);
  return result;
 }
 function calculateDays(entries,rate,baseHours=8){
@@ -153,7 +153,7 @@ function calculateDays(entries,rate,baseHours=8){
    r.ot25=Math.min(eligible,Math.max(0,120-allocated));
    r.ot50=eligible-r.ot25;
    allocated+=eligible;remaining-=eligible;
-   r.total=r.base+rate/60*(r.night30*.3+r.night50*.5+r.sunday*.4+r.holiday+r.ot25*.25+r.ot50*.5);
+   r.total=r.base+rate/60*(r.night30*.3+r.night50*.5+r.sunday*.4+r.holiday+r.ot25*1.25+r.ot50*1.5);
   }
  }
  return results;
@@ -184,7 +184,7 @@ function update(){
  days.forEach((d,i)=>{const r=results[i],el=document.getElementById('day-result-'+d.id);if(errors[i]){invalid=true;el.className='error';el.textContent=errors[i];}else if(!valid){el.className='daytotal';el.textContent='En attente d’un salaire de base valide.';}else{el.className='daytotal';el.textContent=hours(r.minutes/60)+' travaillées · '+money(r.total)+' brut';Object.keys(totals).forEach(k=>totals[k]+=r[k]);}});
  document.getElementById('total').textContent=invalid?'—':money(totals.total);
  document.getElementById('duration').textContent=invalid?'Corrigez les champs pour afficher le total.':hours(totals.minutes/60)+' travaillées · '+days.length+' journée'+(days.length>1?'s':'');
- const lines=[['Salaire de base',totals.minutes,totals.base,''],['Nuit · 22 h – 0 h',totals.night30,totals.night30/60*rate*.3,'+30 %'],['Nuit · 0 h – 6 h',totals.night50,totals.night50/60*rate*.5,'+50 %'],['Dimanche',totals.sunday,totals.sunday/60*rate*.4,'+40 %'],['Jour férié',totals.holiday,totals.holiday/60*rate,'+100 %'],['Heures supplémentaires',totals.ot25,totals.ot25/60*rate*.25,'+25 %'],['Heures supplémentaires',totals.ot50,totals.ot50/60*rate*.5,'+50 %']];
+ const lines=[['Salaire de base',totals.minutes,totals.base,''],['Nuit · 22 h – 0 h',totals.night30,totals.night30/60*rate*.3,'+30 %'],['Nuit · 0 h – 6 h',totals.night50,totals.night50/60*rate*.5,'+50 %'],['Dimanche',totals.sunday,totals.sunday/60*rate*.4,'+40 %'],['Jour férié',totals.holiday,totals.holiday/60*rate,'+100 %'],['Heures supplémentaires',totals.ot25,totals.ot25/60*rate*1.25,'125 %'],['Heures supplémentaires',totals.ot50,totals.ot50/60*rate*1.5,'150 %']];
  document.getElementById('breakdown').innerHTML=invalid?'':lines.map(([label,min,amount,percent])=>`<div class="line"><span>${label}<small>${label==='Salaire de base'?days.length+' × '+money(base):hours(min/60)} ${percent?'à '+percent:''}</small></span><span>${money(amount)}</span></div>`).join('');
 }
 document.getElementById('base').addEventListener('input',update);
