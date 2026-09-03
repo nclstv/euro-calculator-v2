@@ -73,6 +73,15 @@ header::after{display:none}
 
 .rules-content{padding-top:20px}.rules-mode{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.875rem;color:#52617e;margin-bottom:16px}.rules-mode strong{background:#003dff;color:white;padding:6px 10px;border-radius:3px;font-size:.8rem;letter-spacing:.04em}
 .rule-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rule-card{padding:18px;background:#f6f8fd;border:1px solid #e3e8f3;border-radius:5px;min-width:0}.rule-card h3{font-size:.875rem;color:#173e9c;margin:0 0 10px;font-weight:800}.rule-card p{font-size:.875rem;line-height:1.65;color:#47546f;margin:0 0 10px}.rule-card p:last-child{margin-bottom:0}.rule-wide{grid-column:1/-1}.rule-key{font-size:.875rem;font-weight:650;color:#162f6c;border-top:1px solid #dae2f3;padding-top:12px;margin-top:12px}.rule-rates{display:grid;gap:8px;margin-bottom:12px}.rule-rates span{display:flex;justify-content:space-between;gap:10px;font-size:.875rem;color:#47546f}.rule-rates b{color:#003dff;white-space:nowrap}.rule-example{padding:12px 14px;background:#e8efff;border-left:3px solid #003dff;border-radius:2px}.rule-example>strong{font-size:.875rem;color:#173e9c}.rule-example p{margin-top:6px}.rule-premiums{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.rule-premiums>span{font-size:.875rem;color:#47546f}.rule-premiums b{display:block;color:#003dff;font-size:1.35rem;margin:5px 0}.rule-premiums small{display:block;font-size:.75rem;color:#52617e}.rules-total{padding:15px;background:#080d36;color:white;font-size:.875rem;line-height:1.7;border-radius:4px}.rules-footnote{font-size:.8rem;color:#5b6780;line-height:1.65;margin-bottom:0}@media(max-width:600px){.rule-cards{grid-template-columns:1fr}.rule-premiums{grid-template-columns:1fr 1fr;gap:16px}.rule-card{padding:14px}}
+.net-estimate{border-left:3px solid #7095ff;background:#ffffff08;padding:12px 14px;margin:10px 0 18px}.net-estimate>span{display:block;font-size:.875rem;color:#bbc6e3}.net-estimate strong{display:block;font-size:1.75rem;color:white;letter-spacing:-.03em;margin:5px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.net-estimate small{display:block;color:#a8b8df;font-size:.75rem;line-height:1.6}
+.net-estimate{padding:0;border:0;background:transparent;margin:18px 0 0;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.net-estimate>span{font-size:.8rem;color:#a8b8df}
+.net-estimate strong{font-size:1rem;font-weight:600;color:#bbc6e3;letter-spacing:0;margin:0}
+.net-estimate{margin:22px -26px -28px;padding:18px 26px;background:#003dff;border-top:1px solid #527cff;border-radius:0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.net-estimate>span{font-size:.875rem;font-weight:600;color:#fff}
+.net-estimate strong{font-size:1.5rem;font-weight:800;letter-spacing:-.025em;color:#fff;margin:0}
+@media(max-width:540px){.net-estimate{margin:22px -20px -24px;padding:18px 20px}}
+.net-estimate{background:var(--navy);border-top:1px solid #2c335b}
 </style>
 </head>
 <body>
@@ -101,7 +110,7 @@ header::after{display:none}
 <p class="rules-total">Votre brut = salaires de base + heures supplémentaires payées + majorations de nuit, dimanche et jours fériés.</p>
 <p class="rules-footnote">Après minuit, la date réelle détermine le dimanche ou le jour férié. La prestation reste rattachée à sa date de début pour les heures supplémentaires. Les 11 jours fériés nationaux sont détectés automatiquement. Calcul à la minute, sans correction des changements d’heure ; total arrondi au centime.</p>
 </div></details>
-</div><aside><section class="panel summary" aria-live="polite" aria-atomic="true"><h2>Votre brut total</h2><div id="total" class="total"></div><p id="duration" class="hint"></p><div class="divider"></div><div id="breakdown"></div></section><p class="info">Vos saisies restent dans cette page. Elles ne sont pas enregistrées et sont effacées à sa fermeture.</p></aside></div>
+</div><aside><section class="panel summary" aria-live="polite" aria-atomic="true"><h2>Votre brut total</h2><div id="total" class="total"></div><p id="duration" class="hint"></p><div class="divider"></div><div id="breakdown"></div><div class="net-estimate"><span>Net estimé avant impôt</span><strong id="net-total"></strong></div></section><p class="info">Vos saisies restent dans cette page. Elles ne sont pas enregistrées et sont effacées à sa fermeture.</p></aside></div>
 
 </main>
 <footer class="site-footer"><span class="copyright" aria-label="Copyright">©</span>Créé par <strong>Nicolas Stevens</strong></footer>
@@ -195,6 +204,7 @@ function update(){
  let invalid=!valid;
  days.forEach((d,i)=>{const r=results[i],el=document.getElementById('day-result-'+d.id);if(errors[i]){invalid=true;el.className='error';el.textContent=errors[i];}else if(!valid){el.className='daytotal';el.textContent='En attente d’un salaire de base valide.';}else{el.className='daytotal';el.textContent=hours(r.minutes/60)+' travaillées · '+money(r.total)+' brut';Object.keys(totals).forEach(k=>totals[k]+=r[k]);}});
  document.getElementById('total').textContent=invalid?'—':money(totals.total);
+ document.getElementById('net-total').textContent=invalid?'—':money(totals.total*.778);
  document.getElementById('duration').textContent=invalid?'Corrigez les champs pour afficher le total.':hours(totals.minutes/60)+' travaillées · '+days.length+' journée'+(days.length>1?'s':'');
  const lines=[['Salaire de base',totals.minutes,totals.base,''],['Nuit · 22 h – 0 h',totals.night30,totals.night30/60*rate*.3,'+30 %'],['Nuit · 0 h – 6 h',totals.night50,totals.night50/60*rate*.5,'+50 %'],['Dimanche',totals.sunday,totals.sunday/60*rate*.4,'+40 %'],['Jour férié',totals.holiday,totals.holiday/60*rate,'+100 %'],['Heures supplémentaires',totals.ot25,totals.ot25/60*rate*1.25,'125 %'],['Heures supplémentaires',totals.ot50,totals.ot50/60*rate*1.5,'150 %']];
  document.getElementById('breakdown').innerHTML=invalid?'':lines.map(([label,min,amount,percent])=>`<div class="line"><span>${label}<small>${label==='Salaire de base'?days.length+' × '+money(base):hours(min/60)} ${percent?'à '+percent:''}</small></span><span>${money(amount)}</span></div>`).join('');
