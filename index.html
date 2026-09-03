@@ -70,6 +70,9 @@ header::after{display:none}
 .base-selector label:hover span{background:#dce6ff}.base-selector label:has(input:checked):hover span{background:#0033d6}
 .base-selector input:focus-visible+span{outline:3px solid #080d36;outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.base-selector span{transition:none}}
+
+.rules-content{padding-top:20px}.rules-mode{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.875rem;color:#52617e;margin-bottom:16px}.rules-mode strong{background:#003dff;color:white;padding:6px 10px;border-radius:3px;font-size:.8rem;letter-spacing:.04em}
+.rule-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rule-card{padding:18px;background:#f6f8fd;border:1px solid #e3e8f3;border-radius:5px;min-width:0}.rule-card h3{font-size:.875rem;color:#173e9c;margin:0 0 10px;font-weight:800}.rule-card p{font-size:.875rem;line-height:1.65;color:#47546f;margin:0 0 10px}.rule-card p:last-child{margin-bottom:0}.rule-wide{grid-column:1/-1}.rule-key{font-size:.875rem;font-weight:650;color:#162f6c;border-top:1px solid #dae2f3;padding-top:12px;margin-top:12px}.rule-rates{display:grid;gap:8px;margin-bottom:12px}.rule-rates span{display:flex;justify-content:space-between;gap:10px;font-size:.875rem;color:#47546f}.rule-rates b{color:#003dff;white-space:nowrap}.rule-example{padding:12px 14px;background:#e8efff;border-left:3px solid #003dff;border-radius:2px}.rule-example>strong{font-size:.875rem;color:#173e9c}.rule-example p{margin-top:6px}.rule-premiums{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.rule-premiums>span{font-size:.875rem;color:#47546f}.rule-premiums b{display:block;color:#003dff;font-size:1.35rem;margin:5px 0}.rule-premiums small{display:block;font-size:.75rem;color:#52617e}.rules-total{padding:15px;background:#080d36;color:white;font-size:.875rem;line-height:1.7;border-radius:4px}.rules-footnote{font-size:.8rem;color:#5b6780;line-height:1.65;margin-bottom:0}@media(max-width:600px){.rule-cards{grid-template-columns:1fr}.rule-premiums{grid-template-columns:1fr 1fr;gap:16px}.rule-card{padding:14px}}
 </style>
 </head>
 <body>
@@ -87,9 +90,17 @@ header::after{display:none}
 
 </section>
 <details class="rules"><summary>Règles utilisées pour le calcul</summary>
-<ul class="info"><li>Taux horaire = base pour <span class="base-hours">8</span> heures ÷ <span class="base-hours">8</span>.</li><li>De 22 h à minuit : +20 % et +10 %, soit <strong>+30 %</strong>.</li><li>De minuit à 6 h : +20 % et +30 %, soit <strong>+50 %</strong>.</li><li>Dimanche : <strong>+40 %</strong>. Jour férié : <strong>+100 %</strong>. Si les deux coïncident, seule la majoration fériée de +100 % s’applique.</li><li>Les heures au-delà de <span class="base-hours">8</span> h par journée sont cumulées sur la semaine : les 2 premières à <strong>+25 %</strong>, toutes les suivantes à <strong>+50 %</strong>. Les heures manquantes des journées plus courtes réduisent ce cumul hebdomadaire, sans le rendre négatif ni diminuer le salaire de base. Les 2 premières heures restantes sont payées à 125 % du taux horaire, puis les suivantes à 150 %. Le compteur repart à zéro chaque lundi. Une prestation qui traverse minuit reste rattachée à sa date de début pour ce cumul.</li><li>Toutes les majorations s’additionnent sur le taux horaire de base.</li><li>Dimanche et jour férié suivent la date de chaque heure. Le compteur des heures supplémentaires continue après minuit pour la même prestation.</li><li>Les 11 jours fériés nationaux français sont détectés automatiquement selon l’année.</li><li>Chaque journée compte une base fixe de <span class="base-hours">8</span> h, quelle que soit la durée travaillée. Les heures supplémentaires restantes sont ajoutées à cette base à 125 % ou 150 % du taux horaire (heure complète et majoration).</li><li>Calcul à la minute, en heures d’horloge saisies, sans correction de changement d’heure. Arrondi au centime sur le total.</li></ul>
-<p class="formula">Brut = nombre de journées × base journalière + majorations de nuit + majorations dimanche/férié + majorations d’heures supplémentaires.</p>
-</details>
+<div class="rules-content">
+<div class="rules-mode"><strong>BASE <span class="base-hours">8</span> H</strong></div>
+<div class="rule-cards">
+<section class="rule-card"><h3>01 · Le salaire de base</h3><p>Chaque journée est payée au montant saisi, même si vous travaillez moins de <span class="base-hours">8</span> h.</p><div class="rule-key">Taux horaire = salaire de base ÷ <span class="base-hours">8</span></div></section>
+<section class="rule-card"><h3>02 · Les heures supplémentaires</h3><p>Elles commencent après <strong><span class="base-hours">8</span> h par jour</strong>. On les cumule du lundi au dimanche, pour le même contrat.</p><div class="rule-rates"><span>2 premières heures <b>× 1,25</b></span><span>Heures suivantes <b>× 1,50</b></span></div><p>Ces heures sont payées en plus du salaire de base : heure complète + majoration.</p></section>
+<section class="rule-card rule-wide"><h3>03 · Les journées plus courtes</h3><p>Les heures manquantes réduisent les heures supplémentaires de la même semaine. Le compteur ne descend jamais sous zéro et le salaire de base reste entier.</p><div class="rule-example"><strong>Exemple en base <span class="base-hours">8</span> h</strong><p id="rules-example">10 h un jour (+2 h) et 6 h un autre (−2 h) = aucune heure supplémentaire. Les deux salaires de base sont payés.</p></div></section>
+<section class="rule-card rule-wide"><h3>04 · Nuit, dimanche et jours fériés</h3><div class="rule-premiums"><span>22 h → minuit <b>+30 %</b><small>20 % + 10 %</small></span><span>Minuit → 6 h <b>+50 %</b><small>20 % + 30 %</small></span><span>Dimanche <b>+40 %</b></span><span>Jour férié <b>+100 %</b></span></div><p>Ces majorations s’ajoutent sur les heures concernées, à partir du taux horaire de base. Un dimanche férié compte seulement à +100 %.</p></section>
+</div>
+<p class="rules-total">Votre brut = salaires de base + heures supplémentaires payées + majorations de nuit, dimanche et jours fériés.</p>
+<p class="rules-footnote">Après minuit, la date réelle détermine le dimanche ou le jour férié. La prestation reste rattachée à sa date de début pour les heures supplémentaires. Les 11 jours fériés nationaux sont détectés automatiquement. Calcul à la minute, sans correction des changements d’heure ; total arrondi au centime.</p>
+</div></details>
 </div><aside><section class="panel summary" aria-live="polite" aria-atomic="true"><h2>Votre brut total</h2><div id="total" class="total"></div><p id="duration" class="hint"></p><div class="divider"></div><div id="breakdown"></div></section><p class="info">Vos saisies restent dans cette page. Elles ne sont pas enregistrées et sont effacées à sa fermeture.</p></aside></div>
 
 </main>
@@ -168,6 +179,7 @@ function update(){
 
  document.getElementById('base-label').textContent='Salaire brut pour '+baseHours+' heures';
  document.querySelectorAll('.base-hours').forEach(el=>el.textContent=baseHours);
+ document.getElementById('rules-example').textContent=(baseHours+2)+' h un jour (+2 h) et '+(baseHours-2)+' h un autre (−2 h) = aucune heure supplémentaire. Les deux salaires de base sont payés.';
 
  const raw=document.getElementById('base').value,base=Number(raw),valid=raw!==''&&Number.isFinite(base)&&base>=0&&base<=10000000,rate=base/baseHours;
  document.getElementById('hourly').textContent=valid?money(rate)+' brut / heure':'Saisissez une base comprise entre 0 et 10 000 000 €.';
